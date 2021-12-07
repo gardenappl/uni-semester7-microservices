@@ -1,0 +1,33 @@
+server:
+  port: 8092
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gp
+    username: 'gp'
+    password: ''
+  liquibase:
+    change-log: classpath:/db/changelog/db.changeLog-master.xml
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  application:
+    name: core
+
+logging:
+  level:
+    liquibase: INFO
+
+
+keycloak:
+  authServerUrl: http://localhost:8080/auth
+  realm: oop2
+  resource: login-app
+  public-client: true
+  ssl-required: "none"
+
+keycloak-admin-client:
+  realm: master
+  username: user
+  password: password

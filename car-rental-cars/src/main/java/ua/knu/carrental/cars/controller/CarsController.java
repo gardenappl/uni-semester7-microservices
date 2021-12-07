@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ua.knu.carrental.cars.service.CarService;
@@ -18,23 +19,23 @@ import java.util.List;
 public class CarsController {
     private final CarService carService;
 
-    @GetMapping("/cars-available")
+    @GetMapping("/cars/available")
     public ResponseEntity<List<Car>> getAllAvailableCars() {
         return ResponseEntity.ok(carService.getAvailableCars());
     }
 
-    @GetMapping("/cars-available/{manufacturer}")
+    @GetMapping("/cars/available/{manufacturer}")
     public ResponseEntity<List<Car>> getAllAvailableCars(@PathVariable("manufacturer") String manufacturer) {
         return ResponseEntity.ok(carService.getAvailableCars(manufacturer));
     }
 
-    @GetMapping("/car/{id}")
+    @GetMapping("/cars/{id}")
     public ResponseEntity<Car> getCar(@PathVariable("id") int carId) {
         Car car = carService.getCar(carId);
         return ResponseEntity.ok(car);
     }
 
-    @GetMapping("/car-manufacturers")
+    @GetMapping("/cars/manufacturers")
     public ResponseEntity<List<String>> getManufacturers() {
         return ResponseEntity.ok(carService.getAllCarManufacturers());
     }
@@ -49,7 +50,7 @@ public class CarsController {
         public BigDecimal uahPurchase;
     }
 
-    @PostMapping("/new-car")
+    @PostMapping("/cars")
     @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity addNewCar(@Validated @RequestBody NewRequest request) {
         carService.addCar(
@@ -62,5 +63,10 @@ public class CarsController {
                 request.uahPurchase
         );
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/cars/{id}/set-owner")
+    public ResponseEntity<Car> setOwner(@PathVariable("id") int carId, @Validated @RequestBody long userId) {
+        return ResponseEntity.ok(carService.setOwner(carId, userId));
     }
 }
