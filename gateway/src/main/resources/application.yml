@@ -1,0 +1,40 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: cars-service
+          uri: http://localhost:8091/cars/{path}
+          predicates:
+            - Path=/cars/{*path}
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+        - id: payments-service
+          uri: http://localhost:8092/payments/{path}
+          predicates:
+            - Path=/payments/{*path}
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+        - id: requests-service
+          uri: http://localhost:8093/requests/{path}
+          predicates:
+            - Path=/requests/{*path}
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+        - id: users-service
+          uri: http://localhost:8094/users/{path}
+          predicates:
+            - Path=/users/{*path}
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
