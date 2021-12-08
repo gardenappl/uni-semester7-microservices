@@ -2,9 +2,6 @@ package ua.knu.carrental.cars.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ua.knu.carrental.cars.model.Car;
@@ -20,8 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
-    private final String paymentServiceUrl = "http://localhost:8092";
-    private final String usersServiceUrl = "http://localhost:8094";
+    private final String URL = "http://localhost:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Car> getAvailableCars() {
@@ -57,7 +53,7 @@ public class CarService {
         payment.setRentRequestId(null);
         payment.setType(Payment.TYPE_PURCHASE_NEW_CAR);
         payment.setTime(Instant.now().toString());
-        restTemplate.postForEntity(paymentServiceUrl + "/payments", payment, Payment.class);
+        restTemplate.postForEntity(URL + "/payments", payment, Payment.class);
         return car;
     }
 
@@ -67,7 +63,7 @@ public class CarService {
         if (userId == 0) {
             car.setUser(null);
         } else {
-            User user = restTemplate.getForObject(usersServiceUrl + "/users/" + userId, User.class);
+            User user = restTemplate.getForObject(URL + "/users/" + userId, User.class);
             car.setUser(user);
         }
         return carRepository.save(car);

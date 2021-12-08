@@ -1,4 +1,4 @@
-package ua.knu.carrental.requests.controller;
+package ua.knu.carrental.requests.resource;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

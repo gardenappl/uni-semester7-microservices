@@ -1,4 +1,4 @@
-package ua.knu.carrental.payments.controller;
+package ua.knu.carrental.payments.resource;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

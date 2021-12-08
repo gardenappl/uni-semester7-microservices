@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ua.knu.carrental.payments.model.Car;
 import ua.knu.carrental.payments.model.Payment;
-import ua.knu.carrental.payments.model.RentRequest;
 import ua.knu.carrental.payments.repository.PaymentRepository;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PaymentsService {
     private final PaymentRepository paymentRepository;
-    private final String carsServiceUrl = "http://localhost:8091";
+    private final String URL = "http://localhost:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Payment> getAllPayments() {
@@ -22,7 +21,7 @@ public class PaymentsService {
     }
 
     public List<Payment> getPaymentsForCar(int carId) {
-        Car car = restTemplate.getForObject(carsServiceUrl + "/cars/" + carId, Car.class);
+        Car car = restTemplate.getForObject(URL + "/cars/" + carId, Car.class);
         return paymentRepository.findAllByCarOrderByTimeDesc(car);
     }
 

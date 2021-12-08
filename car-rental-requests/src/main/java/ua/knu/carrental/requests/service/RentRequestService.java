@@ -1,15 +1,11 @@
 package ua.knu.carrental.requests.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import ua.knu.carrental.requests.model.Car;
 import ua.knu.carrental.requests.model.Payment;
@@ -19,7 +15,6 @@ import ua.knu.carrental.requests.repository.RentRequestRepository;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,9 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RentRequestService {
     private final RentRequestRepository rentRequestRepository;
-    private final String carsServiceUrl = "http://localhost:8091";
-    private final String paymentsServiceUrl = "http://localhost:8092";
-    private final String usersServiceUrl = "http://localhost:8094";
+    private final String URL = "http://localhost:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
 
@@ -39,7 +32,7 @@ public class RentRequestService {
     }
 
     public List<RentRequest> getRequestsWithStatusForUser(int status, String keycloakId) {
-        Long userId = restTemplate.getForObject(usersServiceUrl + "/users/id/" + keycloakId, Long.class);
+        Long userId = restTemplate.getForObject(URL + "/users/id/" + keycloakId, Long.class);
         return rentRequestRepository.findAllByStatusAndUserId(status, userId);
     }
 
@@ -58,8 +51,8 @@ public class RentRequestService {
     }
 
     public RentRequest addNewPending(String keycloakId, int carId, int days, LocalDate startDate, BigDecimal uahAmount) {
-        Long userId = restTemplate.getForObject(usersServiceUrl + "/users/id/" + keycloakId, Long.class);
-        Car car = restTemplate.getForObject(carsServiceUrl + "/cars/" + carId, Car.class);
+        Long userId = restTemplate.getForObject(URL + "/users/id/" + keycloakId, Long.class);
+        Car car = restTemplate.getForObject(URL + "/cars/" + carId, Car.class);
 
         if (uahAmount.compareTo(car.getUahPerDay().multiply(BigDecimal.valueOf(days))) < 0)
             throw new IllegalArgumentException("Payment amount is not high enough");
@@ -79,7 +72,7 @@ public class RentRequestService {
         newPayment.setCar(car);
         newPayment.setUahAmount(uahAmount);
         HttpEntity<Payment> entity = new HttpEntity<>(newPayment);
-        restTemplate.exchange(paymentsServiceUrl + "/payments", HttpMethod.POST, entity, Void.class);
+        restTemplate.exchange(URL + "/payments", HttpMethod.POST, entity, Void.class);
 
         return request;
     }
@@ -95,7 +88,7 @@ public class RentRequestService {
         request = rentRequestRepository.save(request);
 
         Car car = request.getCar();
-        put(carsServiceUrl + "/cars/" + car.getId() + "/set-owner", request.getUserId(), auth);
+        put(URL + "/cars/" + car.getId() + "/set-owner", request.getUserId(), auth);
 
         List<RentRequest> requests = rentRequestRepository.findAllByCarAndStatus(car, RentRequest.STATUS_PENDING);
         for (RentRequest pendingRequest : requests) {
@@ -119,7 +112,7 @@ public class RentRequestService {
 
         //Do refund
 
-        Payment payment = get(paymentsServiceUrl + "/payments/revenue/" + id, Payment.class, auth);
+        Payment payment = get(URL + "/payments/revenue/" + id, Payment.class, auth);
         Payment newPayment = new Payment();
         newPayment.setTime(Instant.now().toString());
         newPayment.setRentRequestId(id);
@@ -127,7 +120,7 @@ public class RentRequestService {
         newPayment.setCar(payment.getCar());
         newPayment.setUahAmount(payment.getUahAmount().negate());
 
-        restTemplate.postForEntity(paymentsServiceUrl + "/payments", newPayment, Payment.class);
+        restTemplate.postForEntity(URL + "/payments", newPayment, Payment.class);
         return request;
     }
 
@@ -142,7 +135,7 @@ public class RentRequestService {
         request = rentRequestRepository.save(request);
 
         Car car = request.getCar();
-        put(carsServiceUrl + "/cars/" + car.getId() + "/set-owner", 0, auth);
+        put(URL + "/cars/" + car.getId() + "/set-owner", 0, auth);
 
         Payment newPayment = new Payment();
         newPayment.setTime(Instant.now().toString());
@@ -150,7 +143,7 @@ public class RentRequestService {
         newPayment.setType(Payment.TYPE_MAINTENANCE);
         newPayment.setCar(car);
         newPayment.setUahAmount(maintenanceCostUah.negate());
-        restTemplate.postForEntity(paymentsServiceUrl + "/payments", newPayment, Payment.class);
+        restTemplate.postForEntity(URL + "/payments", newPayment, Payment.class);
 
         return request;
     }
@@ -173,7 +166,7 @@ public class RentRequestService {
         newPayment.setType(Payment.TYPE_REPAIR_COST);
         newPayment.setCar(request.getCar());
         newPayment.setUahAmount(paymentCost.negate());
-        restTemplate.postForEntity(paymentsServiceUrl + "/payments", newPayment, Payment.class);
+        restTemplate.postForEntity(URL + "/payments", newPayment, Payment.class);
 
         return request;
     }
@@ -192,7 +185,7 @@ public class RentRequestService {
         request = rentRequestRepository.save(request);
 
         Car car = request.getCar();
-        put(carsServiceUrl + "/cars/" + car.getId() + "/set-owner", 0, auth);
+        put(URL + "/cars/" + car.getId() + "/set-owner", 0, auth);
 
         Payment newPayment = new Payment();
         newPayment.setTime(Instant.now().toString());
@@ -200,7 +193,7 @@ public class RentRequestService {
         newPayment.setType(Payment.TYPE_REPAIR_PAID_BY_CUSTOMER);
         newPayment.setCar(car);
         newPayment.setUahAmount(uahAmount);
-        restTemplate.postForEntity(paymentsServiceUrl + "/payments", newPayment, Payment.class);
+        restTemplate.postForEntity(URL + "/payments", newPayment, Payment.class);
 
         return request;
     }

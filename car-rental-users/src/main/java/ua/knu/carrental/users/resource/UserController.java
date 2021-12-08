@@ -1,4 +1,4 @@
-package ua.knu.carrental.users.controller;
+package ua.knu.carrental.users.resource;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
