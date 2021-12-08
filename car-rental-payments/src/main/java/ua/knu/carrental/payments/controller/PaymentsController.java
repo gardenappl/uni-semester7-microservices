@@ -33,7 +33,7 @@ public class PaymentsController {
     }
 
     @PostMapping("payments")
-    public ResponseEntity<Payment> add(Payment payment) {
+    public ResponseEntity<Payment> add(@RequestBody Payment payment) {
         return ResponseEntity.ok(paymentsService.add(payment));
     }
 }

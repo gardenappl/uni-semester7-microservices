@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -35,5 +36,5 @@ public class Payment {
     private Car car;
 
     @Column(nullable = false)
-    private Instant time;
+    private LocalDateTime time;
 }

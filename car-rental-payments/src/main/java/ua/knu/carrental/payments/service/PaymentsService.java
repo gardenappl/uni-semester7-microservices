@@ -22,7 +22,7 @@ public class PaymentsService {
     }
 
     public List<Payment> getPaymentsForCar(int carId) {
-        Car car = restTemplate.getForObject(carsServiceUrl + "/car/" + carId, Car.class);
+        Car car = restTemplate.getForObject(carsServiceUrl + "/cars/" + carId, Car.class);
         return paymentRepository.findAllByCarOrderByTimeDesc(car);
     }
 

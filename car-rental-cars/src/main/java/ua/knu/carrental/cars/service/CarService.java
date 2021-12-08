@@ -20,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
-    private final String paymentServiceUrl = "http://localhost:8082";
-    private final String usersServiceUrl = "http://localhost:8084";
+    private final String paymentServiceUrl = "http://localhost:8092";
+    private final String usersServiceUrl = "http://localhost:8094";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Car> getAvailableCars() {
@@ -56,7 +56,7 @@ public class CarService {
         payment.setCar(car);
         payment.setRentRequestId(null);
         payment.setType(Payment.TYPE_PURCHASE_NEW_CAR);
-        payment.setTime(Instant.now());
+        payment.setTime(Instant.now().toString());
         restTemplate.postForEntity(paymentServiceUrl + "/payments", payment, Payment.class);
         return car;
     }

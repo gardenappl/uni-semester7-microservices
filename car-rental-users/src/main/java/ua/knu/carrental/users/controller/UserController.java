@@ -53,12 +53,12 @@ public class UserController {
         ));
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("users/{userId}")
     public ResponseEntity<User> get(@PathVariable long userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    @GetMapping("users/id/{id}")
+    @GetMapping("users/id/{keycloakId}")
     public ResponseEntity<Long> getByKeycloakId(@PathVariable String keycloakId) {
         return ResponseEntity.ok(userService.getUserByKeycloakId(keycloakId).getPassportId());
     }
