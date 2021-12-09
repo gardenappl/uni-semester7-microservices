@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PaymentsService {
     private final PaymentRepository paymentRepository;
-    private final String URL = "http://localhost:8090";
+    private final String URL = "http://gateway:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Payment> getAllPayments() {

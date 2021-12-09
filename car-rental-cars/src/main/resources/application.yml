@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/gp
+    url: jdbc:postgresql://postgres:5432/gp
     username: 'gp'
     password: ''
   liquibase:
@@ -21,7 +21,7 @@ logging:
 
 
 keycloak:
-  authServerUrl: http://localhost:8080/auth
+  authServerUrl: http://keycloak:8080/auth
   realm: oop2
   resource: login-app
   public-client: true

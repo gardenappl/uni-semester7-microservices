@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RentRequestService {
     private final RentRequestRepository rentRequestRepository;
-    private final String URL = "http://localhost:8090";
+    private final String URL = "http://gateway:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
 

@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
-    private final String URL = "http://localhost:8090";
+    private final String URL = "http://gateway:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public List<Car> getAvailableCars() {
