@@ -26,7 +26,6 @@ public class RentRequestService {
     private final String URL = "http://gateway:8090";
     private final RestTemplate restTemplate = new RestTemplate();
 
-
     public List<RentRequest> getRequestsWithStatus(int status) {
         return rentRequestRepository.findAllByStatus(status);
     }
@@ -93,13 +92,13 @@ public class RentRequestService {
         List<RentRequest> requests = rentRequestRepository.findAllByCarAndStatus(car, RentRequest.STATUS_PENDING);
         for (RentRequest pendingRequest : requests) {
             if (pendingRequest.getId() != id)
-                deny(pendingRequest.getId(), "Another user got this car", auth);
+                deny(pendingRequest.getId(), "Another user got this car");
         }
 
         return request;
     }
 
-    public RentRequest deny(int id, String message, Authentication auth) {
+    public RentRequest deny(int id, String message) {
         RentRequest request = rentRequestRepository.getById(id);
 
         if (request.getStatus() != RentRequest.STATUS_PENDING) {
@@ -112,7 +111,7 @@ public class RentRequestService {
 
         //Do refund
 
-        Payment payment = get(URL + "/payments/revenue/" + id, Payment.class, auth);
+        Payment payment = get(URL + "/payments/revenue/" + id, Payment.class);
         Payment newPayment = new Payment();
         newPayment.setTime(Instant.now().toString());
         newPayment.setRentRequestId(id);
@@ -124,7 +123,7 @@ public class RentRequestService {
         return request;
     }
 
-    public RentRequest endSuccessfully(int id, BigDecimal maintenanceCostUah, Authentication auth) {
+    public RentRequest endSuccessfully(int id, BigDecimal maintenanceCostUah) {
         RentRequest request = rentRequestRepository.getById(id);
 
         if (request.getStatus() != RentRequest.STATUS_ACTIVE) {
@@ -135,7 +134,7 @@ public class RentRequestService {
         request = rentRequestRepository.save(request);
 
         Car car = request.getCar();
-        put(URL + "/cars/" + car.getId() + "/set-owner", 0, auth);
+        put(URL + "/cars/" + car.getId() + "/set-owner", 0);
 
         Payment newPayment = new Payment();
         newPayment.setTime(Instant.now().toString());
@@ -198,13 +197,13 @@ public class RentRequestService {
         return request;
     }
 
-    private <T> void put(String url, T object, Authentication auth) {
+    private <T> void put(String url, T object) {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<T> entity = new HttpEntity<>(object, headers);
         restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 
-    private <T> T get(String url, Class<T> cls, Authentication auth) {
+    private <T> T get(String url, Class<T> cls) {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity entity = new HttpEntity<>(headers);
         return restTemplate.exchange(url, HttpMethod.GET, entity, cls).getBody();

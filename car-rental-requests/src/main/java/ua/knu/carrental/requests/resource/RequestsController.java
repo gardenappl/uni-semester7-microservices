@@ -59,7 +59,7 @@ public class RequestsController {
     @PostMapping("/requests/deny/{id}")
     @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity deny(@PathVariable("id") int requestId, @Validated @RequestBody DenyRequest request, Authentication auth) {
-        rentRequestService.deny(requestId, request.message, auth);
+        rentRequestService.deny(requestId, request.message);
         return ResponseEntity.ok().build();
     }
 
@@ -71,7 +71,7 @@ public class RequestsController {
     @PostMapping("/requests/end/{id}")
     @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity end(@PathVariable("id") int requestId, @Validated @RequestBody EndSuccessfullyRequest request, Authentication auth) {
-        rentRequestService.endSuccessfully(requestId, request.maintenanceCostUah, auth);
+        rentRequestService.endSuccessfully(requestId, request.maintenanceCostUah);
         return ResponseEntity.ok().build();
     }
 
