@@ -87,7 +87,7 @@ public class RentRequestService {
         request = rentRequestRepository.save(request);
 
         Car car = request.getCar();
-        put(URL + "/cars/" + car.getId() + "/set-owner", request.getUserId(), auth);
+        put(URL + "/cars/" + car.getId() + "/set-owner", request.getUserId());
 
         List<RentRequest> requests = rentRequestRepository.findAllByCarAndStatus(car, RentRequest.STATUS_PENDING);
         for (RentRequest pendingRequest : requests) {
@@ -184,7 +184,7 @@ public class RentRequestService {
         request = rentRequestRepository.save(request);
 
         Car car = request.getCar();
-        put(URL + "/cars/" + car.getId() + "/set-owner", 0, auth);
+        put(URL + "/cars/" + car.getId() + "/set-owner", 0);
 
         Payment newPayment = new Payment();
         newPayment.setTime(Instant.now().toString());

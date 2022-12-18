@@ -18,7 +18,7 @@ spec:
         app: gateway
     spec:
       containers:
-      - image: gardenappl/gateway
+      - image: gardenapple/gateway
         name: gateway
         resources: {}
 status: {}
@@ -43,7 +43,7 @@ spec:
         app: cars
     spec:
       containers:
-      - image: gardenappl/cars
+      - image: gardenapple/cars
         name: cars
         resources: {}
 status: {}
@@ -68,7 +68,7 @@ spec:
         app: payments
     spec:
       containers:
-      - image: gardenappl/payments
+      - image: gardenapple/payments
         name: payments
         resources: {}
 status: {}
@@ -93,7 +93,7 @@ spec:
         app: requests
     spec:
       containers:
-      - image: gardenappl/requests
+      - image: gardenapple/requests
         name: requests
         resources: {}
 status: {}
@@ -118,7 +118,7 @@ spec:
         app: users
     spec:
       containers:
-      - image: gardenappl/users
+      - image: gardenapple/users
         name: users
         resources: {}
 status: {}
@@ -297,7 +297,7 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/mnt/data"
+    path: "/tmp/data"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
